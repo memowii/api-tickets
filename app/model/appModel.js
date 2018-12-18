@@ -1,74 +1,72 @@
 'user strict';
 
-var sql = require('./db.js');
+const db = require('./db.js');
 
-//Task object constructor
-var Ticket = function (ticket) {
-  this.id = ticket.id;
-  this.consecutivo = ticket.consecutivo;
-  this.esta_usado = ticket.esta_usado;
-};
+class Ticket {
 
-Ticket.createTicket = function createTicket(newTicket, result) {
-  sql.query("INSERT INTO tickets set ?", newTicket, function (err, res) {
+  constructor(ticket) {
+    this.id = ticket.id;
+    this.consecutivo = ticket.consecutivo;
+    this.esta_usado = ticket.esta_usado;
+  }
 
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      console.log(res.insertId);
-      result(null, res.insertId);
-    }
-  });
-};
+  static createTicket(ticket, result) {
+    db.query("INSERT INTO tickets set ?", ticket, (error, dbResponse) => {
+      if (error) {
+        console.log("error: ", error);
+        result(error, null);
+      } else {
+        console.log(dbResponse.insertId);
+        result(null, dbResponse.insertId);
+      }
+    });
+  }
 
-Ticket.getTicketById = function getTicketById(ticketId, result) {
-  console.log("ticketid ===> " + ticketId);
-  sql.query("Select * from tickets where id = ?", ticketId, function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      result(null, res);
-    }
-  });
-};
+  static getTicketById(ticketId, result) {
+    db.query("Select * from tickets where id = ?", ticketId, (error, dbResponse) => {
+      if (error) {
+        console.log("error: ", error);
+        result(error, null);
+      } else {
+        result(null, dbResponse);
+      }
+    });
+  }
 
-Ticket.getAllTickets = function getAllTickets(result) {
-  sql.query("Select * from tickets", function (err, res) {
+  static getAllTickets(result) {
+    db.query("Select * from tickets", (error, dbResponse) => {
+      if (error) {
+        console.log("error: ", error);
+        result(null, error);
+      } else {
+        console.log('tasks : ', dbResponse);
+        result(null, dbResponse);
+      }
+    });
+  }
 
-    if (err) {
-      console.log("error: ", err);
-      result(null, err);
-    } else {
-      console.log('tasks : ', res);
+  static updateById(id, ticket, result) {
+    db.query('UPDATE tickets SET consecutivo=?, esta_usado=? WHERE id=?',
+    [ticket.consecutivo, ticket.esta_usado, id], (error, dbResponse) => {
+      if (error) {
+        console.log("error: ", error);
+        result(null, error);
+      } else {
+        result(null, dbResponse);
+      }
+    });
+  }
 
-      result(null, res);
-    }
-  });
-};
-
-Ticket.updateById = (id, ticket, result) => {
-  sql.query('UPDATE tickets SET consecutivo=?, esta_usado=? WHERE id=?',
-  [ticket.consecutivo, ticket.esta_usado, id], (error, dbResponse) => {
-    if (error) {
-      console.log("error: ", error);
-      result(null, error);
-    } else {
-      result(null, dbResponse);
-    }
-  });
-};
-
-Ticket.remove = (id, result) => {
-  sql.query('DELETE FROM tickets WHERE id=?', [id], (error, dbResponse) => {
-    if (error) {
-      console.log("error: ", err);
-      result(null, error);
-    } else {
-      result(null, dbResponse);
-    }
-  });  
-};
+  static remove(id, result) {
+    db.query('DELETE FROM tickets WHERE id=?', [id], (error, dbResponse) => {
+      if (error) {
+        console.log("error: ", error);
+        result(null, error);
+      } else {
+        result(null, dbResponse);
+      }
+    });  
+  }
+}
 
 module.exports = Ticket;

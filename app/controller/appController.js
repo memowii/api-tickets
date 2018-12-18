@@ -39,7 +39,7 @@ exports.updateTicket = (request, response) => {
 exports.deleteTicket = (request, response) => {
   Ticket.remove(request.params.ticketId, (error, ticket) => {
     if (error) response.send(error);
-    
+
     response.json({
       message: 'Ticket successfully deleted'
     });
