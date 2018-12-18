@@ -1,57 +1,46 @@
 'use strict';
 
-var Ticket = require('../model/appModel.js');
+const Ticket = require('../model/appModel.js');
 
-exports.list_all_tickets = function (req, res) {
-  Ticket.getAllTickets(function (err, task) {
+exports.listAllTickets = (request, response) => {
+  Ticket.getAllTickets((error, ticket) => {
+    if (error) response.send(error);
 
-    console.log('controller')
-    if (err)
-      res.send(err);
-    console.log('res', task);
-    res.send(task);
+    response.send(ticket);
   });
 };
 
-exports.create_a_ticket = function (req, res) {
-  var new_ticket = new Ticket(req.body);
+exports.createTicket = (request, response) => {
+  let ticket = new Ticket(request.body);
 
-  //handles null error 
-  if (!new_ticket.task || !new_ticket.status) {
-    res.status(400).send({
-      error: true,
-      message: 'Please provide task/status'
-    });
-  } else {
-    Ticket.createTicket(new_ticket, function (err, ticket) {
+  Ticket.createTicket(ticket, (error, ticket) => {
+    if (error) response.send(error);
 
-      if (err)
-        res.send(err);
-      res.json(ticket);
-    });
-  }
-};
-
-exports.read_a_ticket = function (req, res) {
-  Ticket.getTicketById(req.params.ticketId, function (err, ticket) {
-    if (err) res.send(err);
-    res.json(ticket);
+    response.json(ticket);
   });
 };
 
-exports.update_a_ticket = function (req, res) {
-  Ticket.updateById(req.params.ticketId, new Ticket(req.body), function (err, ticket) {
-    if (err)
-      res.send(err);
-    res.json(ticket);
+exports.getTicket = (request, response) => {
+  Ticket.getTicketById(request.params.ticketId, (error, ticket) => {
+    if (error) response.send(error);
+
+    response.json(ticket);
   });
 };
 
-exports.delete_a_ticket = function (req, res) {
-  Ticket.remove(req.params.ticketId, function (err, ticket) {
-    if (err)
-      res.send(err);
-    res.json({
+exports.updateTicket = (request, response) => {
+  Ticket.updateById(request.params.ticketId, new Ticket(request.body), (error, ticket) => {
+    if (error) response.send(error);
+
+    response.json(ticket);
+  });
+};
+
+exports.deleteTicket = (request, response) => {
+  Ticket.remove(request.params.ticketId, (error, ticket) => {
+    if (error) response.send(error);
+    
+    response.json({
       message: 'Ticket successfully deleted'
     });
   });

@@ -1,15 +1,14 @@
 'use strict';
 
-module.exports = function (app) {
+module.exports = (app => {
   let ticketList = require('../controller/appController');
 
-  // Routes
   app.route('/tickets')
-    .get(ticketList.list_all_tickets)
-    .post(ticketList.create_a_ticket);
+    .get(ticketList.listAllTickets)
+    .post(ticketList.createTicket);
 
   app.route('/tickets/:ticketId')
-    .get(ticketList.read_a_ticket)
-    .put(ticketList.update_a_ticket)
-    .delete(ticketList.delete_a_ticket);
-};
+    .get(ticketList.getTicket)
+    .put(ticketList.updateTicket)
+    .delete(ticketList.deleteTicket);
+});

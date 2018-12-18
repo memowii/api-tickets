@@ -48,30 +48,27 @@ Ticket.getAllTickets = function getAllTickets(result) {
   });
 };
 
-/*
-Ticket.updateById = function (id, task, result) {
-  sql.query("UPDATE tasks SET task = ? WHERE id = ?", [task.task, id], function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(null, err);
+Ticket.updateById = (id, ticket, result) => {
+  sql.query('UPDATE tickets SET consecutivo=?, esta_usado=? WHERE id=?',
+  [ticket.consecutivo, ticket.esta_usado, id], (error, dbResponse) => {
+    if (error) {
+      console.log("error: ", error);
+      result(null, error);
     } else {
-      result(null, res);
+      result(null, dbResponse);
     }
   });
 };
 
-Task.remove = function (id, result) {
-  sql.query("DELETE FROM tasks WHERE id = ?", [id], function (err, res) {
-
-    if (err) {
+Ticket.remove = (id, result) => {
+  sql.query('DELETE FROM tickets WHERE id=?', [id], (error, dbResponse) => {
+    if (error) {
       console.log("error: ", err);
-      result(null, err);
+      result(null, error);
     } else {
-
-      result(null, res);
+      result(null, dbResponse);
     }
-  });
+  });  
 };
-*/
 
 module.exports = Ticket;
