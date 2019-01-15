@@ -17,6 +17,7 @@ app.use((request, response, next) => {
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
 app.use(bodyParser.json());
 
 routes(app);
