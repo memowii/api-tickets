@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 const routes = require('./app/routes/approutes');
 
 app.listen(port);
+
 console.log('API server started on: ' + port);
 
 app.use((request, response, next) => {
