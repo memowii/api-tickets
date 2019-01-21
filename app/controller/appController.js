@@ -49,7 +49,7 @@ exports.deleteTicket = (request, response) => {
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, '../..');
+    cb(null, '/tmp');
   },
   filename: function(req, file, cb) {
     cb(null, new Date().toISOString() + file.originalname);
