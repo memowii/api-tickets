@@ -57,7 +57,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'multipart/form-data') {
+  if (file.mimetype === 'text/csv') {
     cb(null, true);
   } else {
     cb(null, false);

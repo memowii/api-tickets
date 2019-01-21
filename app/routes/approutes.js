@@ -12,7 +12,7 @@ module.exports = app => {
     .put(ticketController.updateTicket)
     .delete(ticketController.deleteTicket);
 
-  app.post('/upload', ticketController.uploadFile.single('image'), (req, res, next) => {
+  app.post('/csvfile', ticketController.uploadFile.single('csvfile'), (req, res, next) => {
     res.status(201).json({
       message: "CSV file uploaded successfully",
     });
