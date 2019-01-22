@@ -37,7 +37,6 @@ Ticket.getAllTickets = (result) => {
       console.log("error: ", error);
       result(null, error);
     } else {
-      console.log('tasks : ', dbResponse);
       result(null, dbResponse);
     }
   });

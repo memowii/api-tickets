@@ -5,6 +5,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
 const routes = require('./app/routes/approutes');
+const config = require('config'); //we load the db location from the JSON files
 
 app.listen(port);
 
@@ -24,3 +25,5 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 routes(app);
+
+module.exports = app;
