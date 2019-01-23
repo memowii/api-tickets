@@ -1,13 +1,32 @@
-let Ticket = require('../app/controller/appController');
+"use strict";
 
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../server');
-let should = chai.should();
+process.env.NODE_ENV = 'test';
+
+const Ticket = require('../app/model/appModel');
+
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../server');
+const should = chai.should();
 
 chai.use(chaiHttp);
 
 describe('Tickets', () => {
+
+  beforeEach((done) => {
+    Ticket.truncate((error, ticket) => {
+      if (error) console.log(error);
+    });
+    done();
+  });
+
+  afterEach((done) => {
+    Ticket.truncate((error, ticket) => {
+      if (error) console.log(error);
+    });
+    done();
+  });
+
   describe('/GET tickets', () => {
     it('it should GET all the tickets', (done) => {
       chai.request(server)
@@ -15,7 +34,7 @@ describe('Tickets', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('array');
-          // res.body.length.should.be.eql(0);
+          res.body.length.should.be.eql(0);
           done();
         });
     });
@@ -24,17 +43,77 @@ describe('Tickets', () => {
   describe('/POST ticket', () => {
     it('it should not POST a ticket without consecutivo field', (done) => {
       let ticket = {
-        id: 1,
         esta_usado: false,
       };
 
       chai.request(server)
-        .post('/ticket')
+        .post('/tickets')
         .send(ticket)
         .end((err, res) => {
-          res.should.have.status(404);
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('sqlMessage');
           done();
         });
+    });
+
+    it('it should POST a ticket', (done) => {
+      let ticket = {
+        consecutivo: 99999,
+        esta_usado: false,
+      };
+
+      chai.request(server)
+        .post('/tickets')
+        .send(ticket)
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.be.a('object');
+          res.body.should.have.property('insertId').equal(1);
+          done();
+        });
+    });
+  });
+
+  describe('/GET/:id ticket', () => {
+    it('it should GET a ticket by the given id', (done) => {
+      let ticket = {
+        consecutivo: 99999,
+        esta_usado: false,
+      };
+
+      Ticket.createTicket(ticket, (error, ticket) => {
+        chai.request(server)
+          .get('/tickets/' + ticket.insertId)
+          .send(ticket)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body[0].should.have.property('id');
+            res.body[0].should.have.property('consecutivo');
+            res.body[0].should.have.property('esta_usado');
+            done();
+          });
+      });
+    });
+  });
+
+  describe('/PUT/:id ticket', () => {
+    it('it should UPDATE a ticket given the id', (done) => {
+      let ticket = {
+        consecutivo: 99999,
+        esta_usado: false,
+      };
+
+      Ticket.createTicket(ticket, (error, ticket) => {
+        chai.request(server)
+          .put('/tickets/' + ticket.insertId)
+          .send({consecutivo: 100000, esta_usado: false,})
+          .end((err, res) => {
+            res.should.have.status(200);
+            done();
+          });
+      });
     });
   });
 });

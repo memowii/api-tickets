@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = app => {
   let ticketController = require('../controller/appController');

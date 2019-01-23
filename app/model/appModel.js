@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const db = require('./db.js');
 
@@ -9,35 +9,32 @@ const Ticket = function (ticket) {
 };
 
 Ticket.createTicket = (ticket, result) => {
-  db.query("INSERT INTO tickets set ?", ticket, (error, dbResponse) => {
+  db.query("INSERT INTO tickets set ?", ticket, (error, results) => {
     if (error) {
-      console.log("error: ", error);
       result(error, null);
     } else {
-      console.log(dbResponse.insertId);
-      result(null, dbResponse.insertId);
+      result(null, results);
     }
   });
 };
 
 Ticket.getTicketById = (ticketId, result) => {
-  db.query("Select * from tickets where id = ?", ticketId, (error, dbResponse) => {
+  db.query("Select * from tickets where id = ?", ticketId, (error, results) => {
     if (error) {
-      console.log("error: ", error);
       result(error, null);
     } else {
-      result(null, dbResponse);
+
+      result(null, results);
     }
   });
 };
 
 Ticket.getAllTickets = (result) => {
-  db.query("Select * from tickets", (error, dbResponse) => {
+  db.query("Select * from tickets", (error, results) => {
     if (error) {
-      console.log("error: ", error);
       result(null, error);
     } else {
-      result(null, dbResponse);
+      result(null, results);
     }
   });
 };
@@ -56,6 +53,17 @@ Ticket.updateById = (id, ticket, result) => {
 
 Ticket.remove = (id, result) => {
   db.query('DELETE FROM tickets WHERE id=?', [id], (error, dbResponse) => {
+    if (error) {
+      console.log("error: ", error);
+      result(null, error);
+    } else {
+      result(null, dbResponse);
+    }
+  });
+};
+
+Ticket.truncate = (result) => {
+  db.query('TRUNCATE TABLE tickets', (error, dbResponse) => {
     if (error) {
       console.log("error: ", error);
       result(null, error);
