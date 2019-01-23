@@ -38,7 +38,7 @@ exports.getTicket = (request, response) => {
 exports.updateTicket = (request, response) => {
   Ticket.updateById(request.params.ticketId, new Ticket(request.body), (error, ticket) => {
     if (error) {
-      response.status(404).send(error);
+      response.status(400).send(error);
     } else {
       response.status(200).json(ticket);
     }
@@ -47,11 +47,11 @@ exports.updateTicket = (request, response) => {
 
 exports.deleteTicket = (request, response) => {
   Ticket.remove(request.params.ticketId, (error, ticket) => {
-    if (error) response.send(error);
-
-    response.json({
-      message: 'Ticket successfully deleted'
-    });
+    if (error) {
+      response.status(400).send(error);
+    } else {
+      response.status(200).json(ticket);
+    }
   });
 };
 

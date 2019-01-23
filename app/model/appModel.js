@@ -41,34 +41,32 @@ Ticket.getAllTickets = (result) => {
 
 Ticket.updateById = (id, ticket, result) => {
   db.query('UPDATE tickets SET consecutivo=?, esta_usado=? WHERE id=?',
-    [ticket.consecutivo, ticket.esta_usado, id], (error, dbResponse) => {
+    [ticket.consecutivo, ticket.esta_usado, id], (error, results) => {
       if (error) {
-        console.log("error: ", error);
         result(null, error);
       } else {
-        result(null, dbResponse);
+        result(null, results);
       }
     });
 };
 
 Ticket.remove = (id, result) => {
-  db.query('DELETE FROM tickets WHERE id=?', [id], (error, dbResponse) => {
+  db.query('DELETE FROM tickets WHERE id=?', [id], (error, results) => {
     if (error) {
-      console.log("error: ", error);
       result(null, error);
     } else {
-      result(null, dbResponse);
+      result(null, results);
     }
   });
 };
 
 Ticket.truncate = (result) => {
-  db.query('TRUNCATE TABLE tickets', (error, dbResponse) => {
+  db.query('TRUNCATE TABLE tickets', (error, results) => {
     if (error) {
       console.log("error: ", error);
       result(null, error);
     } else {
-      result(null, dbResponse);
+      result(null, results);
     }
   });
 };

@@ -111,6 +111,28 @@ describe('Tickets', () => {
           .send({consecutivo: 100000, esta_usado: false,})
           .end((err, res) => {
             res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('affectedRows').equal(1);
+            done();
+          });
+      });
+    });
+  });
+
+  describe('/DELETE/:id ticket', () => {
+    it('it should DELETE a ticket given the id', (done) => {
+      const ticket = {
+        consecutivo: 99999,
+        esta_usado: false,
+      };
+
+      Ticket.createTicket(ticket, (error, ticket) => {
+        chai.request(server)
+          .delete('/tickets/' + ticket.insertId)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('affectedRows').equal(1);
             done();
           });
       });
