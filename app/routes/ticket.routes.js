@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = app => {
-  let ticketController = require('../controller/appController');
+  let ticketController = require('../controllers/ticket.controller');
 
   app.route('/tickets')
     .get(ticketController.listAllTickets)

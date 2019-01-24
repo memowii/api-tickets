@@ -2,7 +2,7 @@
 
 process.env.NODE_ENV = 'test';
 
-const Ticket = require('../app/model/appModel');
+const Ticket = require('../app/models/ticket.model');
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');

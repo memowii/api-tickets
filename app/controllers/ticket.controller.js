@@ -1,6 +1,6 @@
 "use strict";
 
-const Ticket = require('../model/appModel.js');
+const Ticket = require('../models/ticket.model.js');
 const multer = require('multer');
 
 exports.listAllTickets = (request, response) => {
