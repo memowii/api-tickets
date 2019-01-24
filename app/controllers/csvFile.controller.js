@@ -27,4 +27,21 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
-exports.uploadFile = upload;
+exports.upload = upload;
+
+exports.saveTicketsFromCsvFile = (req, res, next) => {
+  const fileInfo = req.file;
+
+  const csvtojson = require('csvtojson');
+  const csvConverter = csvtojson({
+    noheader: true,
+  });
+
+  csvConverter.fromFile(fileInfo.path).then(jsonObj => {
+    return jsonObj
+  });
+
+  res.status(201).json({
+    message: "CSV file uploaded successfully",
+  });
+};
