@@ -42,6 +42,6 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
   });
 
   res.status(201).json({
-    message: "CSV file uploaded successfully",
+    message: "CSV file uploaded.",
   });
 };
