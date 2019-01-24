@@ -60,6 +60,16 @@ Ticket.findByIdAndRemove = (id, result) => {
   });
 };
 
+Ticket.insertMany = (tickets, result) => {
+  db.query('INSERT INTO tickets (consecutivo, esta_usado) VALUES ?', [tickets], (error, results) => {
+    if (error) {
+      result(null, error);
+    } else {
+      result(null, results);
+    }
+  });
+};
+
 Ticket.truncate = (result) => {
   db.query('TRUNCATE TABLE tickets', (error, results) => {
     if (error) {

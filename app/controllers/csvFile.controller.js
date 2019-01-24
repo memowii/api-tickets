@@ -1,6 +1,7 @@
 "use strict";
 
 const multer = require('multer');
+const Ticket = require('../models/ticket.model');
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -29,6 +30,10 @@ const upload = multer({
 
 exports.upload = upload.single('csvfile');
 
+function isStringAlpha(string) {
+  return /^[a-zA-Z]+$/.test(string);
+}
+
 exports.saveTicketsFromCsvFile = (req, res, next) => {
   const fileInfo = req.file;
 
@@ -37,11 +42,27 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
     noheader: true,
   });
 
-  csvConverter.fromFile(fileInfo.path).then(jsonObj => {
-    return jsonObj
-  });
+  csvConverter.fromFile(fileInfo.path).then(jsonContentFile => {
+    let rowIndx = 0;
+    const tickets = [];
 
-  res.status(201).json({
-    message: "CSV file uploaded.",
+    if (isStringAlpha(jsonContentFile[0].field1)) {
+      rowIndx = 1;
+    }
+
+    for (rowIndx; rowIndx < jsonContentFile.length; rowIndx++) {
+      let ticket = [
+        jsonContentFile[rowIndx].field1,
+        false
+      ];
+
+      tickets.push(ticket);
+    }
+
+    Ticket.insertMany(tickets, ((err, result) => {
+      res.status(201).json({
+        message: "CSV file uploaded.",
+      });
+    }));
   });
 };
