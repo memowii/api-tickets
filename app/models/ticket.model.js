@@ -9,6 +9,7 @@ const Ticket = function (ticket) {
 };
 
 Ticket.createTicket = (ticket, result) => {
+  console.log("ticke.model ", ticket);
   db.query("INSERT INTO tickets set ?", ticket, (error, results) => {
     if (error) {
       result(error, null);
@@ -63,7 +64,6 @@ Ticket.remove = (id, result) => {
 Ticket.truncate = (result) => {
   db.query('TRUNCATE TABLE tickets', (error, results) => {
     if (error) {
-      console.log("error: ", error);
       result(null, error);
     } else {
       result(null, results);

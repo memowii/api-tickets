@@ -1,31 +1,13 @@
 "use strict";
 
-module.exports = app => {
-  let ticketController = require('../controllers/ticket.controller');
+const express = require('express');
+const router = express.Router();
+const ticketController = require('../controllers/ticket.controller');
 
-  app.route('/tickets')
-    .get(ticketController.listAllTickets)
-    .post(ticketController.createTicket);
+router.get('/', ticketController.listAllTickets);
+router.post('/', ticketController.createTicket);
+router.get('/:ticketId', ticketController.getTicket);
+router.put('/:ticketId', ticketController.updateTicket);
+router.delete('/:ticketId', ticketController.deleteTicket);
 
-  app.route('/tickets/:ticketId')
-    .get(ticketController.getTicket)
-    .put(ticketController.updateTicket)
-    .delete(ticketController.deleteTicket);
-
-  app.post('/csvfile', ticketController.uploadFile.single('csvfile'), (req, res, next) => {
-    const fileInfo = req.file;
-
-    const csvtojson = require('csvtojson');
-    const csvConverter = csvtojson({
-      noheader: true,
-    });
-
-    csvConverter.fromFile(fileInfo.path).then(jsonObj => {
-      return jsonObj
-    });
-
-    res.status(201).json({
-      message: "CSV file uploaded successfully",
-    });
-  });
-};
+module.exports = router;

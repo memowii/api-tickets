@@ -4,8 +4,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
-const routes = require('./app/routes/ticket.routes');
-const config = require('config'); //we load the db location from the JSON files
+const routes = require('./app/routes');
 
 app.listen(port);
 
