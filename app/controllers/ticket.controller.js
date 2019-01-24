@@ -2,8 +2,8 @@
 
 const Ticket = require('../models/ticket.model.js');
 
-exports.listAllTickets = (request, response) => {
-  Ticket.getAllTickets((error, tickets) => {
+exports.getTickets = (request, response) => {
+  Ticket.findAll((error, tickets) => {
     if (error) {
       response.status(404).send(error);
     } else {
@@ -12,10 +12,10 @@ exports.listAllTickets = (request, response) => {
   });
 };
 
-exports.createTicket = (request, response) => {
+exports.addTicket = (request, response) => {
   let ticket = new Ticket(request.body);
 
-  Ticket.createTicket(ticket, (error, ticket) => {
+  Ticket.create(ticket, (error, ticket) => {
     if (error) {
       response.status(400).send(error);
     } else {
@@ -25,7 +25,7 @@ exports.createTicket = (request, response) => {
 };
 
 exports.getTicket = (request, response) => {
-  Ticket.getTicketById(request.params.ticketId, (error, ticket) => {
+  Ticket.findById(request.params.ticketId, (error, ticket) => {
     if (error) {
       response.status(404).send(error);
     } else {
@@ -35,7 +35,7 @@ exports.getTicket = (request, response) => {
 };
 
 exports.updateTicket = (request, response) => {
-  Ticket.updateById(request.params.ticketId, new Ticket(request.body), (error, ticket) => {
+  Ticket.findByIdAndUpdate(request.params.ticketId, new Ticket(request.body), (error, ticket) => {
     if (error) {
       response.status(400).send(error);
     } else {
@@ -45,7 +45,7 @@ exports.updateTicket = (request, response) => {
 };
 
 exports.deleteTicket = (request, response) => {
-  Ticket.remove(request.params.ticketId, (error, ticket) => {
+  Ticket.findByIdAndRemove(request.params.ticketId, (error, ticket) => {
     if (error) {
       response.status(400).send(error);
     } else {

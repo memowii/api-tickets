@@ -27,7 +27,7 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
-exports.upload = upload;
+exports.upload = upload.single('csvfile');
 
 exports.saveTicketsFromCsvFile = (req, res, next) => {
   const fileInfo = req.file;

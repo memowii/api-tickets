@@ -8,8 +8,7 @@ const Ticket = function (ticket) {
   this.esta_usado = ticket.esta_usado;
 };
 
-Ticket.createTicket = (ticket, result) => {
-  console.log("ticke.model ", ticket);
+Ticket.create = (ticket, result) => {
   db.query("INSERT INTO tickets set ?", ticket, (error, results) => {
     if (error) {
       result(error, null);
@@ -19,7 +18,7 @@ Ticket.createTicket = (ticket, result) => {
   });
 };
 
-Ticket.getTicketById = (ticketId, result) => {
+Ticket.findById = (ticketId, result) => {
   db.query("Select * from tickets where id = ?", ticketId, (error, results) => {
     if (error) {
       result(error, null);
@@ -30,7 +29,7 @@ Ticket.getTicketById = (ticketId, result) => {
   });
 };
 
-Ticket.getAllTickets = (result) => {
+Ticket.findAll = (result) => {
   db.query("Select * from tickets", (error, results) => {
     if (error) {
       result(null, error);
@@ -40,7 +39,7 @@ Ticket.getAllTickets = (result) => {
   });
 };
 
-Ticket.updateById = (id, ticket, result) => {
+Ticket.findByIdAndUpdate = (id, ticket, result) => {
   db.query('UPDATE tickets SET consecutivo=?, esta_usado=? WHERE id=?',
     [ticket.consecutivo, ticket.esta_usado, id], (error, results) => {
       if (error) {
@@ -51,7 +50,7 @@ Ticket.updateById = (id, ticket, result) => {
     });
 };
 
-Ticket.remove = (id, result) => {
+Ticket.findByIdAndRemove = (id, result) => {
   db.query('DELETE FROM tickets WHERE id=?', [id], (error, results) => {
     if (error) {
       result(null, error);

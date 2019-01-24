@@ -4,6 +4,6 @@ const express = require('express');
 const router = express.Router();
 const csvFileController = require('../controllers/csvFile.controller');
 
-router.post('/', csvFileController.upload.single('csvfile'), csvFileController.saveTicketsFromCsvFile);
+router.post('/', csvFileController.upload, csvFileController.saveTicketsFromCsvFile);
 
 module.exports = router;

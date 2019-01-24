@@ -82,7 +82,7 @@ describe('Tickets', () => {
         esta_usado: false,
       };
 
-      Ticket.createTicket(ticket, (error, ticket) => {
+      Ticket.create(ticket, (error, ticket) => {
         chai.request(server)
           .get('/tickets/' + ticket.insertId)
           .send(ticket)
@@ -105,7 +105,7 @@ describe('Tickets', () => {
         esta_usado: false,
       };
 
-      Ticket.createTicket(ticket, (error, ticket) => {
+      Ticket.create(ticket, (error, ticket) => {
         chai.request(server)
           .put('/tickets/' + ticket.insertId)
           .send({consecutivo: 100000, esta_usado: false,})
@@ -126,7 +126,7 @@ describe('Tickets', () => {
         esta_usado: false,
       };
 
-      Ticket.createTicket(ticket, (error, ticket) => {
+      Ticket.create(ticket, (error, ticket) => {
         chai.request(server)
           .delete('/tickets/' + ticket.insertId)
           .end((err, res) => {
