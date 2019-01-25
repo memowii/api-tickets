@@ -30,7 +30,8 @@ Ticket.findById = (ticketId, result) => {
 };
 
 Ticket.findAll = (result) => {
-  db.query("Select * from tickets", (error, results) => {
+  db.query("SELECT * FROM tickets WHERE esta_usado=1 UNION SELECT * FROM tickets WHERE esta_usado=0",
+    (error, results) => {
     if (error) {
       result(null, error);
     } else {
