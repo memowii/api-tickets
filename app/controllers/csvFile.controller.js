@@ -1,13 +1,14 @@
 "use strict";
 
-const multer = require('multer');
 const Ticket = require('../models/ticket.model');
+const multer = require('multer');
+const csvtojson = require('csvtojson');
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, '/tmp');
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     cb(null, new Date().toISOString() + file.originalname);
   }
 });
@@ -37,36 +38,51 @@ function isStringAlpha(string) {
 exports.saveTicketsFromCsvFile = (req, res, next) => {
   const fileInfo = req.file;
 
-  const csvtojson = require('csvtojson');
   const csvConverter = csvtojson({
     noheader: true,
   });
 
   csvConverter.fromFile(fileInfo.path).then(jsonContentFile => {
     let rowIndx = 0;
-    const tickets = [];
+    const ticketsToSave = [];
 
     if (isStringAlpha(jsonContentFile[0].field1)) {
       rowIndx = 1;
     }
 
     for (rowIndx; rowIndx < jsonContentFile.length; rowIndx++) {
-      let ticket = [
+      let newTicket = [
         jsonContentFile[rowIndx].field1,
         false
       ];
 
-      tickets.push(ticket);
+      if (!ticketsToSave.find(ticket => ticket[0] === newTicket[0])) {
+        ticketsToSave.push(newTicket);
+      }
     }
 
-    Ticket.insertMany(tickets, ((err, result) => {
+    Ticket.findAll((err, result) => {
       if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(201).json({
-          message: "Archivo csv subido.",
-        });
+        console.log(err);
+        return;
       }
-    }));
+
+      const DBTickets = result;
+      const unrepeatedTickets = ticketsToSave.filter((ticketToSave) => {
+        return !DBTickets.find((DBTicket) => {
+          return ticketToSave[0] === DBTicket.consecutivo;
+        });
+      });
+
+      Ticket.insertMany(unrepeatedTickets, ((err, result) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          res.status(201).json({
+            message: "Archivo csv subido.",
+          });
+        }
+      }));
+    });
   });
 };
