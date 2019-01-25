@@ -60,9 +60,13 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
     }
 
     Ticket.insertMany(tickets, ((err, result) => {
-      res.status(201).json({
-        message: "CSV file uploaded.",
-      });
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(201).json({
+          message: "Archivo csv subido.",
+        });
+      }
     }));
   });
 };
