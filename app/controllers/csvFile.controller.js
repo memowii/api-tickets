@@ -43,6 +43,13 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
   });
 
   csvConverter.fromFile(fileInfo.path).then(jsonContentFile => {
+    if (!jsonContentFile.length) {
+      res.status(400).json({
+        message: "El archivo csv no contenía datos.",
+      });
+      return;
+    }
+
     let rowIndx = 0;
     const ticketsToSave = [];
 
@@ -80,6 +87,7 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
         } else {
           res.status(201).json({
             message: "Archivo csv subido.",
+            affectedRows: result.affectedRows,
           });
         }
       }));
