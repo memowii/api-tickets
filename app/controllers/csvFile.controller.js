@@ -45,7 +45,7 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
   csvConverter.fromFile(fileInfo.path).then(jsonContentFile => {
     if (!jsonContentFile.length) {
       res.status(400).json({
-        message: "El archivo csv no contenía datos.",
+        message: "El archivo csv no contiene datos.",
       });
       return;
     }

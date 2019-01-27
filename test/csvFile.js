@@ -69,6 +69,18 @@ describe('CsvFiles', () => {
         });
     });
 
-    // add test when consecutivo row is not in the file
+    it("it should POST a csv file, the consecutivo title row is not in the file", (done) => {
+      chai.request(server)
+        .post('/csvFiles')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_without_consecutivo_row.csv'),
+          'test_csv_without_consecutivo_row.csv')
+        .type('form')
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.have.property('affectedRows').equal(5);
+          done();
+        });
+    });
   });
 });
+
