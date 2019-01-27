@@ -1,35 +1,11 @@
 "use strict";
 
 const Ticket = require('../models/ticket.model');
-const multer = require('multer');
+const Uploader = require('../utilities/uploader.utility');
 const csvtojson = require('csvtojson');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, '/tmp');
-  },
-  filename: function (req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  }
-});
-
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'text/csv') {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5
-  },
-  fileFilter: fileFilter
-});
-
-exports.upload = upload.single('csvfile');
+const uploader = new Uploader('csvfile', '/tmp', 'text/csv', 1024 * 1024 * 5);
+exports.upload = uploader.upload;
 
 function isStringAlpha(string) {
   return /^[a-zA-Z]+$/.test(string);

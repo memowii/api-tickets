@@ -51,7 +51,7 @@ describe('CsvFiles', () => {
         .type('form')
         .end((err, res) => {
           res.should.have.status(400);
-          res.body.should.have.property('message').equal('El archivo csv no contenía datos.');
+          res.body.should.have.property('message').equal('El archivo csv no contiene datos.');
           done();
         });
     });
