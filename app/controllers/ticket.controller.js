@@ -1,13 +1,14 @@
 "use strict";
 
 const Ticket = require('../models/ticket.model.js');
+const HTTPStatus = require('http-status');
 
 exports.getTickets = (request, response) => {
   Ticket.findAll((error, tickets) => {
     if (error) {
-      response.status(404).send(error);
+      response.status(HTTPStatus.NOT_FOUND).send(error);
     } else {
-      response.status(200).send(tickets)
+      response.status(HTTPStatus.OK).send(tickets)
     }
   });
 };
@@ -17,9 +18,9 @@ exports.addTicket = (request, response) => {
 
   Ticket.create(ticket, (error, ticket) => {
     if (error) {
-      response.status(400).send(error);
+      response.status(HTTPStatus.BAD_REQUEST).send(error);
     } else {
-      response.status(201).json(ticket);
+      response.status(HTTPStatus.CREATED).json(ticket);
     }
   });
 };
@@ -27,9 +28,9 @@ exports.addTicket = (request, response) => {
 exports.getTicket = (request, response) => {
   Ticket.findById(request.params.ticketId, (error, ticket) => {
     if (error) {
-      response.status(404).send(error);
+      response.status(HTTPStatus.NOT_FOUND).send(error);
     } else {
-      response.status(200).json(ticket);
+      response.status(HTTPStatus.OK).json(ticket);
     }
   });
 };
@@ -37,9 +38,9 @@ exports.getTicket = (request, response) => {
 exports.updateTicket = (request, response) => {
   Ticket.findByIdAndUpdate(request.params.ticketId, new Ticket(request.body), (error, ticket) => {
     if (error) {
-      response.status(400).send(error);
+      response.status(HTTPStatus.BAD_REQUEST).send(error);
     } else {
-      response.status(200).json(ticket);
+      response.status(HTTPStatus.OK).json(ticket);
     }
   });
 };
@@ -47,9 +48,9 @@ exports.updateTicket = (request, response) => {
 exports.deleteTicket = (request, response) => {
   Ticket.findByIdAndRemove(request.params.ticketId, (error, ticket) => {
     if (error) {
-      response.status(400).send(error);
+      response.status(HTTPStatus.BAD_REQUEST).send(error);
     } else {
-      response.status(200).json(ticket);
+      response.status(HTTPStatus.OK).json(ticket);
     }
   });
 };

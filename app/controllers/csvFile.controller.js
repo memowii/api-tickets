@@ -3,8 +3,10 @@
 const Ticket = require('../models/ticket.model');
 const Uploader = require('../utilities/uploader.utility');
 const csvtojson = require('csvtojson');
+const HTTPStatus = require('http-status');
 
 const uploader = new Uploader('csvfile', '/tmp', 'text/csv', 1024 * 1024 * 5);
+
 exports.upload = uploader.upload;
 
 function isStringAlpha(string) {
@@ -20,7 +22,7 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
 
   csvConverter.fromFile(fileInfo.path).then(jsonContentFile => {
     if (!jsonContentFile.length) {
-      res.status(400).json({
+      res.status(HTTPStatus.BAD_REQUEST).json({
         message: "El archivo csv no contiene datos.",
       });
       return;
@@ -59,9 +61,9 @@ exports.saveTicketsFromCsvFile = (req, res, next) => {
 
       Ticket.insertMany(unrepeatedTickets, ((err, result) => {
         if (err) {
-          res.status(500).send(err);
+          res.status(HTTPStatus.INTERNAL_SERVER_ERROR).send(err);
         } else {
-          res.status(201).json({
+          res.status(HTTPStatus.CREATED).json({
             message: "Archivo csv subido.",
             affectedRows: result.affectedRows,
           });
