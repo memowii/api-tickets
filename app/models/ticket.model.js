@@ -23,7 +23,6 @@ Ticket.findById = (ticketId, result) => {
     if (error) {
       result(error, null);
     } else {
-
       result(null, results);
     }
   });
@@ -33,7 +32,7 @@ Ticket.findAll = (result) => {
   db.query("SELECT * FROM tickets WHERE esta_usado=1 UNION SELECT * FROM tickets WHERE esta_usado=0",
     (error, results) => {
     if (error) {
-      result(null, error);
+      result(error, null);
     } else {
       result(null, results);
     }
@@ -44,7 +43,7 @@ Ticket.findByIdAndUpdate = (id, ticket, result) => {
   db.query('UPDATE tickets SET consecutivo=?, esta_usado=? WHERE id=?',
     [ticket.consecutivo, ticket.esta_usado, id], (error, results) => {
       if (error) {
-        result(null, error);
+        result(error, null);
       } else {
         result(null, results);
       }
@@ -54,7 +53,7 @@ Ticket.findByIdAndUpdate = (id, ticket, result) => {
 Ticket.findByIdAndRemove = (id, result) => {
   db.query('DELETE FROM tickets WHERE id=?', [id], (error, results) => {
     if (error) {
-      result(null, error);
+      result(error, null);
     } else {
       result(null, results);
     }
@@ -64,7 +63,7 @@ Ticket.findByIdAndRemove = (id, result) => {
 Ticket.insertMany = (tickets, result) => {
   db.query('INSERT INTO tickets (consecutivo, esta_usado) VALUES ?', [tickets], (error, results) => {
     if (error) {
-      result(null, error);
+      result(error, null);
     } else {
       result(null, results);
     }
@@ -74,7 +73,7 @@ Ticket.insertMany = (tickets, result) => {
 Ticket.truncate = (result) => {
   db.query('TRUNCATE TABLE tickets', (error, results) => {
     if (error) {
-      result(null, error);
+      result(error, null);
     } else {
       result(null, results);
     }
