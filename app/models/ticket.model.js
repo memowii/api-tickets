@@ -29,13 +29,14 @@ Ticket.findById = (ticketId, result) => {
 };
 
 Ticket.findAll = (result) => {
-  db.query("SELECT * FROM tickets WHERE esta_usado=1 UNION SELECT * FROM tickets WHERE esta_usado=0",
-    (error, results) => {
-    if (error) {
-      result(error, null);
-    } else {
-      result(null, results);
-    }
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM tickets WHERE esta_usado=1 UNION SELECT * FROM tickets WHERE esta_usado=0", (error, results) => {
+      if (error) {
+        result(null, error);
+      } else {
+        result(null, results);
+      }
+    });
   });
 };
 
