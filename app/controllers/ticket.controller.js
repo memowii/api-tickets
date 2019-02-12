@@ -40,12 +40,11 @@ exports.updateTicket = async (request, response) => {
   }
 };
 
-exports.deleteTicket = (request, response) => {
-  Ticket.findByIdAndRemove(request.params.ticketId, (error, ticket) => {
-    if (error) {
-      response.status(HTTPStatus.BAD_REQUEST).send(error);
-    } else {
-      response.status(HTTPStatus.OK).json(ticket);
-    }
-  });
+exports.deleteTicket = async (request, response) => {
+  try {
+    const DBResults = await Ticket.findByIdAndRemove(request.params.ticketId);
+    response.status(HTTPStatus.OK).json(DBResults);
+  } catch (e) {
+    response.status(HTTPStatus.BAD_REQUEST).send(e);
+  }
 };

@@ -45,41 +45,44 @@ Ticket.findByIdAndUpdate = (id, ticket) => {
   return new Promise((resolve, reject) => {
     db.query('UPDATE tickets SET consecutivo=?, esta_usado=? WHERE id=?',
       [ticket.consecutivo, ticket.esta_usado, id], (error, results) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(results);
+      if (error) {
+        reject(error);
+      }
+      resolve(results);
     });
   });
 };
 
 Ticket.findByIdAndRemove = (id, result) => {
-  db.query('DELETE FROM tickets WHERE id=?', [id], (error, results) => {
-    if (error) {
-      result(error, null);
-    } else {
-      result(null, results);
-    }
+  return new Promise((resolve, reject) => {
+    db.query('DELETE FROM tickets WHERE id=?', [id], (error, results) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(results);
+    });
   });
 };
 
 Ticket.insertMany = (tickets, result) => {
-  db.query('INSERT INTO tickets (consecutivo, esta_usado) VALUES ?', [tickets], (error, results) => {
-    if (error) {
-      result(error, null);
-    } else {
-      result(null, results);
-    }
+  return new Promise((resolve, reject) => {
+    db.query('INSERT INTO tickets (consecutivo, esta_usado) VALUES ?', [tickets], (error, results) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(results);
+    });
   });
 };
 
 Ticket.truncate = (result) => {
-  db.query('TRUNCATE TABLE tickets', (error, results) => {
-    if (error) {
-      result(error, null);
-    } else {
-      result(null, results);
-    }
+  return new Promise((resolve, reject) => {
+    db.query('TRUNCATE TABLE tickets', (error, results) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(results);
+    });
   });
 };
 

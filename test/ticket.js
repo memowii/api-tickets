@@ -14,17 +14,15 @@ chai.use(chaiHttp);
 describe('Tickets', () => {
 
   beforeEach((done) => {
-    Ticket.truncate((error, ticket) => {
-      if (error) console.log(error);
+    Ticket.truncate().then(() => {
+      done();
     });
-    done();
   });
 
   afterEach((done) => {
-    Ticket.truncate((error, ticket) => {
-      if (error) console.log(error);
+    Ticket.truncate().then(() => {
+      done();
     });
-    done();
   });
 
   describe('/GET tickets', () => {
