@@ -82,9 +82,9 @@ describe('Tickets', () => {
         esta_usado: false,
       };
 
-      Ticket.create(ticket, (error, ticket) => {
+      Ticket.create(ticket).then((DBResults) => {
         chai.request(server)
-          .get('/tickets/' + ticket.insertId)
+          .get('/tickets/' + DBResults.insertId)
           .send(ticket)
           .end((err, res) => {
             res.should.have.status(200);
@@ -105,9 +105,9 @@ describe('Tickets', () => {
         esta_usado: false,
       };
 
-      Ticket.create(ticket, (error, ticket) => {
+      Ticket.create(ticket).then( (DBResults) => {
         chai.request(server)
-          .put('/tickets/' + ticket.insertId)
+          .put('/tickets/' + DBResults.insertId)
           .send({consecutivo: 100000, esta_usado: false,})
           .end((err, res) => {
             res.should.have.status(200);
@@ -126,9 +126,9 @@ describe('Tickets', () => {
         esta_usado: false,
       };
 
-      Ticket.create(ticket, (error, ticket) => {
+      Ticket.create(ticket).then((DBResults) => {
         chai.request(server)
-          .delete('/tickets/' + ticket.insertId)
+          .delete('/tickets/' + DBResults.insertId)
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
