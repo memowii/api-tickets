@@ -3,48 +3,48 @@
 const Ticket = require('../models/ticket.model.js');
 const HTTPStatus = require('http-status');
 
-exports.getTickets = async (request, response) => {
+exports.getTickets = async (req, res) => {
   try {
     const tickets = await Ticket.findAll();
-    response.status(HTTPStatus.OK).json(tickets);
-  } catch (e) {
-    response.status(HTTPStatus.NOT_FOUND).send(e);
+    res.status(HTTPStatus.OK).json(tickets);
+  } catch (error) {
+    res.status(HTTPStatus.NOT_FOUND).send(error);
   }
 };
 
-exports.addTicket = async (request, response) => {
-  const ticket = new Ticket(request.body);
+exports.addTicket = async (req, res) => {
+  const ticket = new Ticket(req.body);
   try {
     const DBResults = await Ticket.create(ticket);
-    response.status(HTTPStatus.CREATED).json(DBResults);
-  } catch (e) {
-    response.status(HTTPStatus.BAD_REQUEST).send(e);
+    res.status(HTTPStatus.CREATED).json(DBResults);
+  } catch (error) {
+    res.status(HTTPStatus.BAD_REQUEST).send(error);
   }
 };
 
-exports.getTicket = async (request, response) => {
+exports.getTicket = async (req, res) => {
   try {
-    const ticket = await Ticket.findById(request.params.ticketId);
-    response.status(HTTPStatus.OK).json(ticket);
-  } catch (e) {
-    response.status(HTTPStatus.NOT_FOUND).send(e);
+    const ticket = await Ticket.findById(req.params.ticketId);
+    res.status(HTTPStatus.OK).json(ticket);
+  } catch (error) {
+    res.status(HTTPStatus.NOT_FOUND).send(error);
   }
 };
 
-exports.updateTicket = async (request, response) => {
+exports.updateTicket = async (req, res) => {
   try {
-    const DBResults = await Ticket.findByIdAndUpdate(request.params.ticketId, new Ticket(request.body));
-    response.status(HTTPStatus.OK).json(DBResults);
-  } catch (e) {
-    response.status(HTTPStatus.BAD_REQUEST).send(e);
+    const DBResults = await Ticket.findByIdAndUpdate(req.params.ticketId, new Ticket(req.body));
+    res.status(HTTPStatus.OK).json(DBResults);
+  } catch (error) {
+    res.status(HTTPStatus.BAD_REQUEST).send(error);
   }
 };
 
-exports.deleteTicket = async (request, response) => {
+exports.deleteTicket = async (req, res) => {
   try {
-    const DBResults = await Ticket.findByIdAndRemove(request.params.ticketId);
-    response.status(HTTPStatus.OK).json(DBResults);
-  } catch (e) {
-    response.status(HTTPStatus.BAD_REQUEST).send(e);
+    const DBResults = await Ticket.findByIdAndRemove(req.params.ticketId);
+    res.status(HTTPStatus.OK).json(DBResults);
+  } catch (error) {
+    res.status(HTTPStatus.BAD_REQUEST).send(error);
   }
 };
