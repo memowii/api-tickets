@@ -26,13 +26,25 @@ function Uploader(name, destination, filters, fileSize) {
     }
   };
 
-  this.upload = multer({
-    storage: _this.storage,
-    limits: {
-      fileSize: _this.fileSize
-    },
-    fileFilter: _this.fileFilter
-  }).single(_this.name);
+  this.getUploaderType = (isSingle, maxCount) => {
+    if (isSingle) {
+      return multer({
+        storage: _this.storage,
+        limits: {
+          fileSize: _this.fileSize
+        },
+        fileFilter: _this.fileFilter
+      }).single(_this.name);
+    } else {
+      return multer({
+        storage: _this.storage,
+        limits: {
+          fileSize: _this.fileSize
+        },
+        fileFilter: _this.fileFilter
+      }).array(_this.name, maxCount);
+    }
+  };
 }
 
 module.exports = Uploader;

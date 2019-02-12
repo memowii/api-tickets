@@ -15,17 +15,15 @@ chai.use(chaiHttp);
 describe('CsvFiles', () => {
 
   beforeEach((done) => {
-    Ticket.truncate((error, ticket) => {
-      if (error) console.log(error);
+    Ticket.truncate().then(() => {
+      done();
     });
-    done();
   });
 
   afterEach((done) => {
-    Ticket.truncate((error, ticket) => {
-      if (error) console.log(error);
+    Ticket.truncate().then(() => {
+      done();
     });
-    done();
   });
 
   describe('/POST csvFile', () => {
@@ -81,6 +79,36 @@ describe('CsvFiles', () => {
           done();
         });
     });
+
+    it('it should POST (or upload) several csv files', (done) => {
+      chai.request(server)
+        .post('/csvFiles')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_several_files_1.csv'),'test_csv_several_files_1.csv')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_several_files_2.csv'),'test_csv_several_files_2.csv')
+        .type('form')
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.have.property('message');
+          res.body.should.have.property('affectedRows').equal(10);
+          done();
+        });
+    });
+
+    it('it should POST (or upload) several csv files with consecutivos repeated', (done) => {
+      chai.request(server)
+        .post('/csvFiles')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_several_files_1.csv'),'test_csv_several_files_1.csv')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_several_files_2.csv'),'test_csv_several_files_2.csv')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_several_files_3.csv'),'test_csv_several_files_3.csv')
+        .type('form')
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.have.property('message');
+          res.body.should.have.property('affectedRows').equal(10);
+          done();
+        });
+    });
+
   });
 });
 

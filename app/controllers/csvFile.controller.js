@@ -8,32 +8,39 @@ const HTTPStatus = require('http-status');
 
 const uploader = new Uploader('csvfile', '/tmp', 'text/csv', 1024 * 1024 * 5);
 
-exports.upload = uploader.upload;
+exports.upload = uploader.getUploaderType(false, 5);
 
 exports.saveTicketsFromCsvFile = async (req, res, next) => {
   try {
-    const fileInfo = req.file;
-    const csvConverter = csvtojson({
-      noheader: true,
-    });
+    const filesInfo = req.files;
+    let affectedRows = 0;
 
-    const jsonFileContent = await csvConverter.fromFile(fileInfo.path);
-    if (!jsonFileContent.length) {
-      res.status(HTTPStatus.BAD_REQUEST).json({
-        message: "El archivo csv no contiene datos.",
+    for (let fileInfo of Object.values(filesInfo)) {
+      const csvConverter = csvtojson({
+        noheader: true,
       });
-      return;
+
+      const jsonFileContent = await csvConverter.fromFile(fileInfo.path);
+      if (!jsonFileContent.length) {
+        res.status(HTTPStatus.BAD_REQUEST).json({
+          message: "El archivo csv no contiene datos.",
+        });
+        return;
+      }
+
+      const DBTickets = await Ticket.findAll();
+      const ticketsFilter = new TicketsFilter(jsonFileContent, DBTickets);
+      const unrepeatedTickets = ticketsFilter.getUnrepeatedTickets();
+
+      if (unrepeatedTickets.length) {
+        const DBResults = await Ticket.insertMany(unrepeatedTickets);
+        affectedRows += DBResults.affectedRows;
+      }
     }
 
-    const DBTickets = await Ticket.findAll();
-    const ticketsFilter = new TicketsFilter(jsonFileContent, DBTickets);
-    const unrepeatedTickets = ticketsFilter.getUnrepeatedTickets();
-
-    Ticket.insertMany(unrepeatedTickets).then((DBResults) => {
-      res.status(HTTPStatus.CREATED).json({
-        message: "Archivo csv subido.",
-        affectedRows: DBResults.affectedRows,
-      });
+    res.status(HTTPStatus.CREATED).json({
+      message: `Archivo${filesInfo.length > 1 ? 's': ''} csv subido${filesInfo.length > 1 ? 's': ''}.`,
+      affectedRows: affectedRows,
     });
   } catch (error) {
     res.status(HTTPStatus.INTERNAL_SERVER_ERROR).send(error);
