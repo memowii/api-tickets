@@ -32,7 +32,8 @@ Ticket.findById = (ticketId) => {
 
 Ticket.findAll = () => {
   return new Promise((resolve, reject) => {
-    db.query("SELECT * FROM tickets WHERE esta_usado=1 UNION SELECT * FROM tickets WHERE esta_usado=0", (error, results) => {
+    db.query("SELECT * FROM tickets WHERE esta_usado=1 UNION SELECT * FROM tickets WHERE esta_usado=0",
+      (error, results) => {
       if (error) {
         reject(error);
       }
@@ -53,7 +54,7 @@ Ticket.findByIdAndUpdate = (id, ticket) => {
   });
 };
 
-Ticket.findByIdAndRemove = (id, result) => {
+Ticket.findByIdAndRemove = (id) => {
   return new Promise((resolve, reject) => {
     db.query('DELETE FROM tickets WHERE id=?', [id], (error, results) => {
       if (error) {
@@ -64,7 +65,7 @@ Ticket.findByIdAndRemove = (id, result) => {
   });
 };
 
-Ticket.insertMany = (tickets, result) => {
+Ticket.insertMany = (tickets) => {
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO tickets (consecutivo, esta_usado) VALUES ?', [tickets], (error, results) => {
       if (error) {
@@ -75,7 +76,7 @@ Ticket.insertMany = (tickets, result) => {
   });
 };
 
-Ticket.truncate = (result) => {
+Ticket.truncate = () => {
   return new Promise((resolve, reject) => {
     db.query('TRUNCATE TABLE tickets', (error, results) => {
       if (error) {
