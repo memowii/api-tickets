@@ -8,12 +8,13 @@ const HTTPStatus = require('http-status');
 
 const uploader = new Uploader('csvfile', '/tmp', 'text/csv', 1024 * 1024 * 5);
 
-exports.upload = uploader.getUploaderType(false, 5);
+exports.upload = uploader.getUploader('array', 5);
 
 exports.saveTicketsFromCsvFile = async (req, res, next) => {
   try {
     const filesInfo = req.files;
-    let affectedRows = 0;
+    const DBTickets = await Ticket.findAll();
+    const ticketsFilter = new TicketsFilter();
 
     for (let fileInfo of Object.values(filesInfo)) {
       const csvConverter = csvtojson({
@@ -23,25 +24,25 @@ exports.saveTicketsFromCsvFile = async (req, res, next) => {
       const jsonFileContent = await csvConverter.fromFile(fileInfo.path);
       if (!jsonFileContent.length) {
         res.status(HTTPStatus.BAD_REQUEST).json({
-          message: "El archivo csv no contiene datos.",
+          message: `El archivo ${fileInfo.originalname} no contiene datos.`,
         });
         return;
       }
-
-      const DBTickets = await Ticket.findAll();
-      const ticketsFilter = new TicketsFilter(jsonFileContent, DBTickets);
-      const unrepeatedTickets = ticketsFilter.getUnrepeatedTickets();
-
-      if (unrepeatedTickets.length) {
-        const DBResults = await Ticket.insertMany(unrepeatedTickets);
-        affectedRows += DBResults.affectedRows;
-      }
+      ticketsFilter.filterUnrepeatedTickets(jsonFileContent, DBTickets);
     }
 
-    res.status(HTTPStatus.CREATED).json({
-      message: `Archivo${filesInfo.length > 1 ? 's': ''} csv subido${filesInfo.length > 1 ? 's': ''}.`,
-      affectedRows: affectedRows,
-    });
+    if (ticketsFilter.ticketsToSave.length) {
+      const DBResults = await Ticket.insertMany(ticketsFilter.ticketsToSave);
+      res.status(HTTPStatus.CREATED).json({
+        message: `Archivo${filesInfo.length > 1 ? 's': ''} csv subido${filesInfo.length > 1 ? 's': ''}.`,
+        affectedRows: DBResults.affectedRows,
+      });
+    } else {
+      res.status(HTTPStatus.OK).json({
+        message: `Archivo${filesInfo.length > 1 ? 's': ''} csv subido${filesInfo.length > 1 ? 's': ''}.`,
+        affectedRows: 0,
+      });
+    }
   } catch (error) {
     res.status(HTTPStatus.INTERNAL_SERVER_ERROR).send(error);
   }

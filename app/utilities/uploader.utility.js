@@ -26,8 +26,8 @@ function Uploader(name, destination, filters, fileSize) {
     }
   };
 
-  this.getUploaderType = (isSingle, maxCount) => {
-    if (isSingle) {
+  this.getUploader = (uploaderType, maxCount) => {
+    if (uploaderType === 'single') {
       return multer({
         storage: _this.storage,
         limits: {
@@ -35,7 +35,9 @@ function Uploader(name, destination, filters, fileSize) {
         },
         fileFilter: _this.fileFilter
       }).single(_this.name);
-    } else {
+    }
+
+    if (uploaderType === 'array') {
       return multer({
         storage: _this.storage,
         limits: {

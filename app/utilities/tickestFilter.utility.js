@@ -1,38 +1,41 @@
 class TicketsFilter {
 
-  constructor(CSVTickets, DBTickets) {
-    this.CSVTickets = CSVTickets;
-    this.DBTickets = DBTickets;
+  constructor() {
+    this.ticketsToSave = [];
+    this.tickets = [];
   }
 
   isStringAlpha(string) {
     return /^[a-zA-Z]+$/.test(string);
   }
 
-  getUnrepeatedTickets() {
+  filterUnrepeatedTickets(CSVTickets, DBTickets) {
     let rowIndx = 0;
-    const ticketsToSave = [];
 
-    if (this.isStringAlpha(this.CSVTickets[0].field1)) {
+    if (this.isStringAlpha(CSVTickets[0].field1)) {
       rowIndx = 1;
     }
 
-    for (rowIndx; rowIndx < this.CSVTickets.length; rowIndx++) {
+    for (rowIndx; rowIndx < CSVTickets.length; rowIndx++) {
       let newTicket = [
-        /* consecutivo = */ this.CSVTickets[rowIndx].field1,
+        /* consecutivo = */ CSVTickets[rowIndx].field1,
         /* esta_usado = */ false
       ];
 
-      if (!ticketsToSave.find(ticket => ticket[0] === newTicket[0])) {
-        ticketsToSave.push(newTicket);
+      if (!this.ticketsToSave.find(ticket => ticket[0] === newTicket[0]) &&
+          !this.tickets.find(ticket => ticket[0] === newTicket[0])) {
+        this.tickets.push(newTicket);
       }
     }
 
-    return ticketsToSave.filter((ticketToSave) => {
-      return !this.DBTickets.find((DBTicket) => {
-        return ticketToSave[0] === DBTicket.consecutivo;
-      });
-    });
+    this.ticketsToSave = this.ticketsToSave.concat(
+      this.tickets.filter((ticket) => {
+        return !DBTickets.find((DBTicket) => {
+          return ticket[0] === DBTicket.consecutivo;
+        });
+      })
+    );
+    this.tickets = [];
   }
 }
 

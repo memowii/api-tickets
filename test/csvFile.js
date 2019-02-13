@@ -49,7 +49,7 @@ describe('CsvFiles', () => {
         .type('form')
         .end((err, res) => {
           res.should.have.status(400);
-          res.body.should.have.property('message').equal('El archivo csv no contiene datos.');
+          res.body.should.have.property('message').equal('El archivo test_csv_without_data.csv no contiene datos.');
           done();
         });
     });
@@ -109,6 +109,27 @@ describe('CsvFiles', () => {
         });
     });
 
+    it('it should try to POST (or upload) a csv file but its consecutivos are already saved in the database', (done) => {
+      const tickets = [
+        [1, false],
+        [2, false],
+        [3, false],
+        [4, false],
+        [5, false],
+      ];
+
+      Ticket.insertMany(tickets).then((DBResults) => {
+        chai.request(server)
+          .post('/csvFiles')
+          .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_normal_csv.csv'),'test_normal_csv.csv')
+          .type('form')
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.have.property('message');
+            res.body.should.have.property('affectedRows').equal(0);
+            done();
+          });
+      });
+    });
   });
 });
-
