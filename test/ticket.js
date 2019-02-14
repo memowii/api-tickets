@@ -41,6 +41,7 @@ describe('Tickets', () => {
   describe('/POST ticket', () => {
     it('it should not POST a ticket without consecutivo field', (done) => {
       let ticket = {
+        comentario: 'comentario ccc',
         esta_usado: false,
       };
 
@@ -58,6 +59,7 @@ describe('Tickets', () => {
     it('it should POST a ticket', (done) => {
       let ticket = {
         consecutivo: 99999,
+        comentario: 'comentario ccc',
         esta_usado: false,
       };
 
@@ -77,18 +79,20 @@ describe('Tickets', () => {
     it('it should GET a ticket by the given id', (done) => {
       let ticket = {
         consecutivo: 99999,
+        comentario: 'comentario ccc',
         esta_usado: false,
       };
 
       Ticket.create(ticket).then((DBResults) => {
         chai.request(server)
-          .get('/tickets/' + DBResults.insertId)
+          .get(`/tickets/${DBResults.insertId}`)
           .send(ticket)
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body[0].should.have.property('id');
             res.body[0].should.have.property('consecutivo');
+            res.body[0].should.have.property('comentario');
             res.body[0].should.have.property('esta_usado');
             done();
           });
@@ -98,15 +102,16 @@ describe('Tickets', () => {
 
   describe('/PUT/:id ticket', () => {
     it('it should UPDATE a ticket given the id', (done) => {
-      let ticket = {
+      const ticket = {
         consecutivo: 99999,
+        comentario: null,
         esta_usado: false,
       };
 
       Ticket.create(ticket).then( (DBResults) => {
         chai.request(server)
-          .put('/tickets/' + DBResults.insertId)
-          .send({consecutivo: 100000, esta_usado: false,})
+          .put(`/tickets/${DBResults.insertId}`)
+          .send({consecutivo: 100000, comentario: 'comentario ccc', esta_usado: false,})
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
@@ -121,12 +126,13 @@ describe('Tickets', () => {
     it('it should DELETE a ticket given the id', (done) => {
       const ticket = {
         consecutivo: 99999,
+        comentario: 'comentario ccc',
         esta_usado: false,
       };
 
       Ticket.create(ticket).then((DBResults) => {
         chai.request(server)
-          .delete('/tickets/' + DBResults.insertId)
+          .delete(`/tickets/${DBResults.insertId}`)
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');

@@ -111,11 +111,11 @@ describe('CsvFiles', () => {
 
     it('it should try to POST (or upload) a csv file but its consecutivos are already saved in the database', (done) => {
       const tickets = [
-        [1, false],
-        [2, false],
-        [3, false],
-        [4, false],
-        [5, false],
+        [1, null, false],
+        [2, null, false],
+        [3, null, false],
+        [4, null, false],
+        [5, null, false],
       ];
 
       Ticket.insertMany(tickets).then((DBResults) => {

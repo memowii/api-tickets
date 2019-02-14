@@ -12,19 +12,17 @@ exports.upload = uploader.getUploader('array', 5);
 
 exports.saveTicketsFromCsvFile = async (req, res, next) => {
   try {
-    const filesInfo = req.files;
+    const uploadedFilesInfo = req.files;
     const DBTickets = await Ticket.findAll();
     const ticketsFilter = new TicketsFilter();
 
-    for (let fileInfo of Object.values(filesInfo)) {
-      const csvConverter = csvtojson({
-        noheader: true,
-      });
-
-      const jsonFileContent = await csvConverter.fromFile(fileInfo.path);
+    for (let uploadedFileInfo of Object.values(uploadedFilesInfo)) {
+      // For every uploaded file, create a csvConverter, otherwise it will fail with an error of type "stream writable."
+      const csvConverter = csvtojson({noheader: true,});
+      const jsonFileContent = await csvConverter.fromFile(uploadedFileInfo.path);
       if (!jsonFileContent.length) {
         res.status(HTTPStatus.BAD_REQUEST).json({
-          message: `El archivo ${fileInfo.originalname} no contiene datos.`,
+          message: `El archivo ${uploadedFileInfo.originalname} no contiene datos.`,
         });
         return;
       }
@@ -34,12 +32,12 @@ exports.saveTicketsFromCsvFile = async (req, res, next) => {
     if (ticketsFilter.ticketsToSave.length) {
       const DBResults = await Ticket.insertMany(ticketsFilter.ticketsToSave);
       res.status(HTTPStatus.CREATED).json({
-        message: `Archivo${filesInfo.length > 1 ? 's': ''} csv subido${filesInfo.length > 1 ? 's': ''}.`,
+        message: `Archivo${uploadedFilesInfo.length > 1 ? 's': ''} csv subido${uploadedFilesInfo.length > 1 ? 's': ''}.`,
         affectedRows: DBResults.affectedRows,
       });
     } else {
       res.status(HTTPStatus.OK).json({
-        message: `Archivo${filesInfo.length > 1 ? 's': ''} csv subido${filesInfo.length > 1 ? 's': ''}.`,
+        message: `Archivo${uploadedFilesInfo.length > 1 ? 's': ''} csv subido${uploadedFilesInfo.length > 1 ? 's': ''}.`,
         affectedRows: 0,
       });
     }

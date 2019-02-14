@@ -19,6 +19,7 @@ class TicketsFilter {
     for (rowIndx; rowIndx < CSVTickets.length; rowIndx++) {
       let newTicket = [
         /* consecutivo = */ CSVTickets[rowIndx].field1,
+        /* comentario = */ CSVTickets[rowIndx].field2 || null,
         /* esta_usado = */ false
       ];
 
