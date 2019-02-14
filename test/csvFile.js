@@ -131,5 +131,32 @@ describe('CsvFiles', () => {
           });
       });
     });
+
+    it('it should POST (or upload) a csv file, every ticket from the file has a comentario', (done) => {
+      chai.request(server)
+        .post('/csvFiles')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_tickets_with_comentario.csv'),'test_csv_tickets_with_comentario.csv')
+        .type('form')
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.have.property('message');
+          res.body.should.have.property('affectedRows').equal(5);
+          done();
+        });
+    });
+
+    it('it should POST (or upload) a csv file, some tickets from the file have a comentario', (done) => {
+      chai.request(server)
+        .post('/csvFiles')
+        .attach('csvfile', fs.readFileSync('./test/testCsvFiles/test_csv_some_tickets_have_a_comentario.csv'),
+          'test_csv_some_tickets_have_a_comentario.csv')
+        .type('form')
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.have.property('message');
+          res.body.should.have.property('affectedRows').equal(7);
+          done();
+        });
+    });
   });
 });
