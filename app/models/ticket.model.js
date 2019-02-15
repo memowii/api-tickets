@@ -5,6 +5,7 @@ const db = require('./db.js');
 const Ticket = function (ticket) {
   this.id = ticket.id;
   this.consecutivo = ticket.consecutivo;
+  this.comentario = ticket.comentario;
   this.esta_usado = ticket.esta_usado;
 };
 
