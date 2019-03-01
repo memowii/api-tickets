@@ -1,0 +1,205 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Tickets API",
+    "description": "Tickets API to expose unused tickets from N.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "Tickets",
+      "description": "API for tickets in the system."
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/Tickets": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "description": "Create new ticket in system",
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "body",
+            "description": "The ticket that we want to create.",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "New ticket is created",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Get all tickets in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Tickets"
+            }
+          }
+        }
+      }
+    },
+    "/tickets/{ticketId}": {
+      "parameters": [
+        {
+          "name": "ticketId",
+          "in": "path",
+          "required": true,
+          "description": "ID of ticket that we want to find",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Get ticket with given ID",
+        "responses": {
+          "200": {
+            "description": "Ticket is found",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Ticket with given ID",
+        "tags": [
+          "Tickets"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket is deleted",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Ticket with give ID",
+        "tags": [
+          "Tickets"
+        ],
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "body",
+            "description": "Ticket with new values of properties",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket is updated",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        }
+      }
+    },
+    "/csvFiles": {
+      "post": {
+        "tags": [
+          "csvFiles"
+        ],
+        "description": "Upload a csvFile file in system",
+        "parameters": [
+          {
+            "name": "csvFile",
+            "in": "body",
+            "description": "The csv file that we want to upload.",
+            "schema": {
+              "$ref": "#/definitions/csvFile"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Uploaded tickets to the system",
+            "schema": {
+              "$ref": "#/definitions/csvFile"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Ticket": {
+      "required": [
+        "consecutivo",
+        "esta_usado"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
+        "comentario": {
+          "type": "string"
+        },
+        "consecutivo": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "esta_usado": {
+          "type": "integer"
+        }
+      }
+    },
+    "Tickets": {
+      "type": "array",
+      "$ref": "#/definitions/Ticket"
+    },
+    "csvFile": {
+      "required": [
+        "csvfile"
+      ],
+      "properties": {
+        "csvfile": {
+          "type": "string",
+          "format": "binary"
+        }
+      }
+    }
+  }
+}

@@ -28,7 +28,7 @@ describe('Tickets', () => {
   describe('/GET tickets', () => {
     it('it should GET all the tickets', (done) => {
       chai.request(server)
-        .get('/tickets')
+        .get('/api/v1/tickets')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('array');
@@ -46,7 +46,7 @@ describe('Tickets', () => {
       };
 
       chai.request(server)
-        .post('/tickets')
+        .post('/api/v1/tickets')
         .send(ticket)
         .end((err, res) => {
           res.should.have.status(400);
@@ -64,7 +64,7 @@ describe('Tickets', () => {
       };
 
       chai.request(server)
-        .post('/tickets')
+        .post('/api/v1/tickets')
         .send(ticket)
         .end((err, res) => {
           res.should.have.status(201);
@@ -85,7 +85,7 @@ describe('Tickets', () => {
 
       Ticket.create(ticket).then((DBResults) => {
         chai.request(server)
-          .get(`/tickets/${DBResults.insertId}`)
+          .get(`/api/v1/tickets/${DBResults.insertId}`)
           .send(ticket)
           .end((err, res) => {
             res.should.have.status(200);
@@ -110,7 +110,7 @@ describe('Tickets', () => {
 
       Ticket.create(ticket).then( (DBResults) => {
         chai.request(server)
-          .put(`/tickets/${DBResults.insertId}`)
+          .put(`/api/v1/tickets/${DBResults.insertId}`)
           .send({consecutivo: 100000, comentario: 'comentario ccc', esta_usado: false,})
           .end((err, res) => {
             res.should.have.status(200);
@@ -132,7 +132,7 @@ describe('Tickets', () => {
 
       Ticket.create(ticket).then((DBResults) => {
         chai.request(server)
-          .delete(`/tickets/${DBResults.insertId}`)
+          .delete(`/api/v1/tickets/${DBResults.insertId}`)
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
